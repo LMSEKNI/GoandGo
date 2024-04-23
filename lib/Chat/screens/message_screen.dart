@@ -64,6 +64,7 @@ class _MessageScreenState extends State<MessageScreen> {
     final Function func = arguments[2];
 
     return Scaffold(
+
       extendBodyBehindAppBar: true,
       appBar: buildAppBar(people),
       body: buildMessageBody(index, func),

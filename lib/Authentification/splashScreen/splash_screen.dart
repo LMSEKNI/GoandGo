@@ -47,19 +47,18 @@ class _MySplashScreenState extends State<MySplashScreen>
     return Material(
       child: Container(
         color: Colors.white,
-        child: Center(
+        child: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
               Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset("images/splash.jpg"),
+                padding: EdgeInsets.all(10.0),
               ),
 
-              const SizedBox(height: 10,),
+              SizedBox(height: 10,),
 
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(18.0),
                 child: Text(
                   "CARPOOLING",

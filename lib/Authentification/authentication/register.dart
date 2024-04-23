@@ -182,8 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       "userAvatarUrl": userImageUrl,
       "phone": phoneController.text.trim(),
       "address": completeAddress,
-      "status": "approved",
-      "earnings": 0.0,
+      "status": "Passanger",
       "lat": position!.latitude,
       "lng": position!.longitude,
     });

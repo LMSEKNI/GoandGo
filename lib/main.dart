@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:goandgoapp/Authentification/authentication/login.dart';
 import 'package:goandgoapp/Authentification/global/global.dart';
 import 'package:goandgoapp/Authentification/splashScreen/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Authentification/authentication/auth_screen.dart';
 import 'Authentification/mainScreens/home_screen.dart';
+import 'Chat/screens/chat_screen.dart';
+import 'Profile/Profile.dart';
 
 Future<void> main() async
 {
@@ -34,6 +34,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MySplashScreen(),
+      routes: {
+        '/home': (context) => HomeScreen(),
+        '/chat': (context) => ChatScreen(),
+        '/profile': (context) => ProfileScreen(),
+      },
     );
   }
 }

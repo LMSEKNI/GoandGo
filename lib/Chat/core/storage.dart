@@ -1,31 +1,44 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class UserData {
+  final String name;
+  final String avatarUrl;
+
+
+  UserData({required this.name, required this.avatarUrl});
+}
 
 class Storage {
-  final storage = const FlutterSecureStorage();
+  static Future<List<UserData>> getUsersData() async {
+    List<UserData> usersData = [];
 
-  saveUser({required String username, required int admin}) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("username", username);
-    await storage.write(key: "admin", value: admin.toString());
-  }
+    try {
+      QuerySnapshot querySnapshot =
+      await FirebaseFirestore.instance.collection('users').get();
 
-  loadUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+      querySnapshot.docs.forEach((doc) {
+        String name = doc['userName'];
+        String imageUrl = doc['userAvatarUrl'];
 
-    var username = prefs.getString("username");
-    String? admin = await storage.read(key: "admin");
+        UserData userData = UserData(name: name, avatarUrl: imageUrl);
+        usersData.add(userData);
+      });
 
-    if (username == null || admin == null) {
-      return null;
-    } else {
-      return {"username": username, "admin": admin};
+      return usersData;
+    } catch (e) {
+      print("Error loading users data: $e");
+      return []; // Return empty list if error occurs
     }
   }
 
-  clearUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove("username");
-    await storage.delete(key: "admin");
+  // Define getUsers method to retrieve user data
+  static Future<List<UserData>> getUsers() async {
+    try {
+      List<UserData> usersData = await getUsersData();
+      return usersData;
+    } catch (e) {
+      print("Error getting users: $e");
+      return []; // Return empty list if error occurs
+    }
   }
 }
