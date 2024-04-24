@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../Profile/Profile.dart';
 import '../core/storage.dart';
-import '../widgets/bottomNavigationBar.dart'; // Import the CustomBottomNavigationBar widget
+import 'ChatRoomScreen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -11,19 +11,30 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<UserData> users = []; // Define a list to store the users
+  late List<UserData> users = [];
+  late String currentUserID;
 
   @override
   void initState() {
     super.initState();
     // Fetch users from storage when the screen initializes
     fetchUsers();
+    fetchCurrentUserID();
   }
 
   void fetchUsers() async {
     // Retrieve users from the storage
     users = await Storage.getUsers();
     setState(() {}); // Update the UI after fetching users
+  }
+
+  void fetchCurrentUserID() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        currentUserID = user.uid;
+      });
+    }
   }
 
   @override
@@ -56,28 +67,27 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 onTap: () {
                   // Handle tapping on a user
-                  // e.g., navigate to a chat screen with this user
+                  _navigateToConversation(user);
                 },
               );
             },
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 2, // Set the current index to 2 for the ChatScreen
-        onTap: (index) {
-          setState(() {
-            if (index == 0) {
-              Navigator.pushReplacementNamed(context, '/home');
-            } else if (index == 1) {
-              Navigator.pushReplacementNamed(context, '/search');
-            } else if (index == 3) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
-            }
-          });
-        },
-      ), // Add bottom navigation bar
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  void _navigateToConversation(UserData user) {
+    final currentUserID = FirebaseAuth.instance.currentUser!.uid;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatRoomScreen(
+          userId1: currentUserID,
+          userId2: user.userId,
+        ),
+      ),
     );
   }
 }

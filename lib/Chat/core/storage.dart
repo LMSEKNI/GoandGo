@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserData {
+  final String userId;
   final String name;
   final String avatarUrl;
 
-
-  UserData({required this.name, required this.avatarUrl});
+  UserData({required this.userId, required this.name, required this.avatarUrl});
 }
 
 class Storage {
@@ -17,10 +17,11 @@ class Storage {
       await FirebaseFirestore.instance.collection('users').get();
 
       querySnapshot.docs.forEach((doc) {
+        String userId = doc.id;
         String name = doc['userName'];
         String imageUrl = doc['userAvatarUrl'];
 
-        UserData userData = UserData(name: name, avatarUrl: imageUrl);
+        UserData userData = UserData(userId: userId, name: name, avatarUrl: imageUrl);
         usersData.add(userData);
       });
 

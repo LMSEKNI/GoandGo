@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import '../Authentification/authentication/auth_screen.dart';
 import '../Authentification/global/global.dart';
-import '../Chat/screens/chat_screen.dart';
-import '../Chat/widgets/bottomNavigationBar.dart';
 import './dialogs.dart';
 
 
@@ -18,23 +16,21 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late User? currentUser;
-  late DocumentSnapshot userData;
+  late Future<DocumentSnapshot<Map<String, dynamic>>> userDataFuture;
 
   @override
   void initState() {
     super.initState();
     currentUser = FirebaseAuth.instance.currentUser;
-    fetchUserData();
+    userDataFuture = fetchUserData();
   }
 
-  void fetchUserData() async {
+  Future<DocumentSnapshot<Map<String, dynamic>>> fetchUserData() async {
     final docSnapshot = await FirebaseFirestore.instance
         .collection("users")
         .doc(currentUser!.uid)
         .get();
-    setState(() {
-      userData = docSnapshot;
-    });
+    return docSnapshot;
   }
 
   // Function to handle logout action.
@@ -70,50 +66,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Container(
           padding: const EdgeInsets.all(16.0),
           color: Color(0xFF232d4b),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(userData['userAvatarUrl']),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              buildProfileItem("Name", userData['userName']),
-              buildProfileItem("Email", userData['userEmail']),
-              buildProfileItem("Phone", userData['phone']),
-              buildProfileItem("Address", userData['address']),
-              buildProfileItem("Status", userData['status']),
-              const Spacer(), // Add a spacer to push the logout button to the bottom
-            ],
+          child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            future: userDataFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                final userData = snapshot.data!;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(userData['userAvatarUrl']),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    buildProfileItem("Name", userData['userName']),
+                    buildProfileItem("Email", userData['userEmail']),
+                    buildProfileItem("Phone", userData['phone']),
+                    buildProfileItem("Address", userData['address']),
+                    buildProfileItem("Status", userData['status']),
+                    const Spacer(),
+                  ],
+                );
+              }
+            },
           ),
         ),
       ),
-      floatingActionButton: buildLogoutButton(), // Add logout button as a floating action button
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat, // Position logout button at the bottom center
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 3, // Set the current index to 3 for the ProfileScreen
-        onTap: (index) {
-          setState(() {
-            // Navigate to the corresponding screen when an item is tapped
-            switch (index) {
-              case 0:
-                Navigator.pushReplacementNamed(context, '/home');
-                break;
-              case 1:
-                Navigator.pushReplacementNamed(context, '/search');
-                break;
-              case 2:
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen()));
-                break;
-              case 3:
-              // Do nothing because we are already on the ProfileScreen
-                break;
-            }
-          });
-        },
-      ),
+      floatingActionButton: buildLogoutButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
