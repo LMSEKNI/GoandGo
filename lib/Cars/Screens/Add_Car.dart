@@ -51,7 +51,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
         'serialNumber': _serialNumber,
         'numberOfSeats': _numberOfSeats,
         'photoUrl': photoUrl,
-        'userID': userID,
+        'userID': userID, // Include the user ID of the creator
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -67,6 +67,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
       );
     }
   }
+
 
   Future<String> _uploadImage(File imageFile) async {
     // Upload image file to Firebase Storage and get the download URL

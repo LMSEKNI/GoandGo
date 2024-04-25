@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+
 import '../Chat/core/storage.dart';
+import 'TravalerDetails.dart'; // Import UserDetailsScreen
 
 class AvailableTravelerScreen extends StatefulWidget {
   const AvailableTravelerScreen({Key? key}) : super(key: key);
@@ -84,36 +87,44 @@ class _AvailableTravelerScreenState extends State<AvailableTravelerScreen> {
                             .contains(_searchValue.toLowerCase())) {
                       return SizedBox.shrink(); // Hide if not matched
                     }
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 9),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
+                    return GestureDetector(
+                      onTap: () {
+                        // Navigate to UserDetailsScreen when tapping on a traveler
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserDetailsScreen(userId: traveler.userId),
                           ),
-                        ],
-                      ),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          radius: 25,
-                          backgroundImage: NetworkImage(traveler.avatarUrl),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 9),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
-                        title: Text(
-                          traveler.name,
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            color: Color(0xFF00aa9b),
-                            fontWeight: FontWeight.bold,
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            radius: 25,
+                            backgroundImage: NetworkImage(traveler.avatarUrl),
+                          ),
+                          title: Text(
+                            traveler.name,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              color: Color(0xFF00aa9b),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                        onTap: () {
-                          // Handle tapping on a traveler
-                        },
                       ),
                     );
                   },

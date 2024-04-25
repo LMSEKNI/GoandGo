@@ -35,6 +35,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
           label: 'Chat',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.bookmark),
+          label: 'Bookings',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profile',
         ),

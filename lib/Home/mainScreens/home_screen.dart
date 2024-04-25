@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goandgoapp/Profile/profile.dart';
+import '../../Bookings/Screens/mainPage.dart';
 import '../../Cars/Screens/AvailableCarsScreen.dart';
 import '../../Chat/screens/chat_screen.dart';
 import '../../Travelers/AvailableTravalersScreen.dart';
@@ -40,7 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
         return Placeholder();
       case 3://chat
         return ChatScreen();
-      case 4://profile
+      case 4://bookings
+        return BookingScreen();
+      case 5://profile
         return ProfileScreen();
       default:
         return Placeholder();
