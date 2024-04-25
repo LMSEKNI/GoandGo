@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:goandgoapp/Authentification/global/global.dart';
-import 'package:goandgoapp/Authentification/mainScreens/home_screen.dart';
 import 'package:goandgoapp/Authentification/widgets/custom_text_field.dart';
 import 'package:goandgoapp/Authentification/widgets/error_dialog.dart';
 import 'package:goandgoapp/Authentification/widgets/loading_dialog.dart';
+
+import '../../Cars/Screens/CarDecisionScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -62,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (currentUser != null) {
       readDataAndSetDataLocally(currentUser!).then((value) {
         Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (c) => const HomeScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (c) => CarDecisionScreen()));
       });
     }
   }

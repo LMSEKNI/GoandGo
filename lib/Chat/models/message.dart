@@ -13,17 +13,6 @@ class Message {
     required this.createdAt,
   });
 
-  factory Message.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return Message(
-      userId1: data['userId1'],
-      userId2: data['userId2'],
-      content: data['content'],
-      createdAt: data['createdAt'] as Timestamp,
-    );
-  }
-
-
   Map<String, dynamic> toMap() {
     return {
       'userId1': userId1,
@@ -31,5 +20,15 @@ class Message {
       'content': content,
       'createdAt': createdAt,
     };
+  }
+
+  factory Message.fromFirestore(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    return Message(
+      userId1: data['userId1'],
+      userId2: data['userId2'],
+      content: data['content'],
+      createdAt: data['createdAt'],
+    );
   }
 }

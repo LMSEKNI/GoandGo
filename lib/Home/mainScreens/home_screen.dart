@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:goandgoapp/Profile/profile.dart';
+import '../../Cars/Screens/AvailableCarsScreen.dart';
 import '../../Chat/screens/chat_screen.dart';
-import '../../Chat/widgets/bottomNavigationBar.dart';
+import '../../Travelers/AvailableTravalersScreen.dart';
+import '../widgets/bottomNavigationBar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -30,13 +32,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildScreen() {
     switch (_currentIndex) {
-      case 0:
+      case 0://Cars
+        return AvailableCarsScreen();
+      case 1: //traveler
+        return AvailableTravelerScreen();
+      case 2://Home
         return Placeholder();
-      case 1:
-        return Placeholder();
-      case 2:
+      case 3://chat
         return ChatScreen();
-      case 3:
+      case 4://profile
         return ProfileScreen();
       default:
         return Placeholder();

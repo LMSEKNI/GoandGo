@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:goandgoapp/Authentification/global/global.dart';
 import 'package:goandgoapp/Authentification/splashScreen/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'Authentification/mainScreens/home_screen.dart';
 import 'Chat/screens/chat_screen.dart';
+import 'Home/mainScreens/home_screen.dart';
 import 'Profile/Profile.dart';
 
 Future<void> main() async

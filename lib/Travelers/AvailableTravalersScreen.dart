@@ -1,31 +1,31 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../core/storage.dart';
-import 'ChatRoomScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../Chat/core/storage.dart';
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+
+class AvailableTravelerScreen extends StatefulWidget {
+  const AvailableTravelerScreen({Key? key}) : super(key: key);
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _AvailableTravelerScreenState createState() => _AvailableTravelerScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
-  late List<UserData> users = [];
+class _AvailableTravelerScreenState extends State<AvailableTravelerScreen> {
+  late List<UserData> travelers = [];
   late String currentUserID;
 
   @override
   void initState() {
     super.initState();
-    // Fetch users from storage when the screen initializes
-    fetchUsers();
+    // Fetch travelers from storage when the screen initializes
+    fetchTravelers();
     fetchCurrentUserID();
   }
 
-  void fetchUsers() async {
-    // Retrieve users from the storage
-    users = await Storage.getUsers();
-    setState(() {}); // Update the UI after fetching users
+  void fetchTravelers() async {
+    // Retrieve travelers from the storage
+    travelers = await Storage.getUsers();
+    setState(() {}); // Update the UI after fetching travelers
   }
 
   void fetchCurrentUserID() async {
@@ -42,7 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF00aa9b),
-        title: const Text("Chats"),
+        title: const Text("Available Travelers"),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -50,9 +50,9 @@ class _ChatScreenState extends State<ChatScreen> {
           padding: const EdgeInsets.all(16.0),
           color: const Color(0xFF232d4b),
           child: ListView.builder(
-            itemCount: users.length,
+            itemCount: travelers.length,
             itemBuilder: (context, index) {
-              final user = users[index];
+              final traveler = travelers[index];
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 9),
                 decoration: BoxDecoration(
@@ -70,10 +70,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: ListTile(
                   leading: CircleAvatar(
                     radius: 25,
-                    backgroundImage: NetworkImage(user.avatarUrl),
+                    backgroundImage: NetworkImage(traveler.avatarUrl),
                   ),
                   title: Text(
-                    user.name,
+                    traveler.name,
                     style: const TextStyle(
                       fontSize: 16.0,
                       color: Color(0xFF00aa9b),
@@ -81,8 +81,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   onTap: () {
-                    // Handle tapping on a user
-                    _navigateToConversation(user);
+                    // Handle tapping on a traveler
+
                   },
                 ),
               );
@@ -94,18 +94,4 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-
-
-  void _navigateToConversation(UserData user) {
-    final currentUserID = FirebaseAuth.instance.currentUser!.uid;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatRoomScreen(
-          userId1: currentUserID,
-          userId2: user.userId,
-        ),
-      ),
-    );
-  }
 }

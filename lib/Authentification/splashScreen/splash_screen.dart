@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:goandgoapp/Authentification/authentication/auth_screen.dart';
 import 'package:goandgoapp/Authentification/global/global.dart';
-import 'package:goandgoapp/Authentification/mainScreens/home_screen.dart';
+
+
+import '../../Home/mainScreens/home_screen.dart';
 
 
 

@@ -16,6 +16,7 @@ class ChatRoomScreen extends StatefulWidget {
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   late TextEditingController _messageController;
   late Stream<QuerySnapshot> _messageStream;
+  String userName = '';
 
   @override
   void initState() {
@@ -23,17 +24,26 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     _messageController = TextEditingController();
     _messageStream = FirebaseFirestore.instance
         .collection('chat')
-        .doc(widget.chatId)
-        .collection('messages')
+        .where('userId1', isEqualTo: widget.userId1)
+        .where('userId2', isEqualTo: widget.userId2)
         .orderBy('createdAt', descending: true)
         .snapshots();
+
+    fetchUserName();
+  }
+
+  void fetchUserName() async {
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(widget.userId2).get();
+    setState(() {
+      userName = userDoc['userName'];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Room'),
+        title: Text(userName), // Display the user's name dynamically
         centerTitle: true,
       ),
       body: Column(
@@ -48,11 +58,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   );
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
+                  return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-                if (snapshot.hasData) {
+                if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                   return ListView.builder(
                     reverse: true,
                     itemCount: snapshot.data!.docs.length,
@@ -65,8 +75,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                       );
                     },
                   );
+                } else {
+                  return Center(
+                    child: Text('No messages yet.'),
+                  );
                 }
-                return SizedBox(); // Return an empty SizedBox if no data
               },
             ),
           ),
@@ -136,7 +149,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           ),
         );
       }
-
       _messageController.clear();
     }
   }
