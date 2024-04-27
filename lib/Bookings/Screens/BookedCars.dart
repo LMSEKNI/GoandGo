@@ -8,6 +8,11 @@ class BookedCarsScreen extends StatelessWidget {
     final currentUserID = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
+        appBar: AppBar(
+        title: const Text("My Bookings"),
+        centerTitle: true,
+          backgroundColor: Color(0xFF00aa9b),
+        ),
       body: Container(
         color: Color(0xFF232d4b), // Change body color
         child: StreamBuilder<QuerySnapshot>(

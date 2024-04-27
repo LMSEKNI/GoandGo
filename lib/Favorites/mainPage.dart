@@ -2,17 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'BookedCars.dart';
+import 'CarsFavoriteScreens.dart';
+import 'FavoritesScreen.dart';
 
 
-class BookingScreen extends StatelessWidget {
+class FavoritesScreen_main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("My Bookings"),
+          title: const Text("Favorites"),
           centerTitle: true,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
@@ -57,8 +58,8 @@ class BookingScreen extends StatelessWidget {
           ),
           child: TabBarView(
             children: [
-              BookedCarsScreen(), // Your Car List screen widget
-              Placeholder(), // Your Traveler List screen widget
+              CarsFavoritesScreen(), // Your Car List screen widget
+              FavoritesScreen(), // Your Traveler List screen widget
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -111,18 +112,39 @@ class _AvailableTravelerScreenState extends State<AvailableTravelerScreen> {
                             ),
                           ],
                         ),
-                        child: ListTile(
+                        child:ListTile(
                           leading: CircleAvatar(
                             radius: 25,
                             backgroundImage: NetworkImage(traveler.avatarUrl),
                           ),
-                          title: Text(
-                            traveler.name,
-                            style: const TextStyle(
-                              fontSize: 16.0,
-                              color: Color(0xFF00aa9b),
-                              fontWeight: FontWeight.bold,
-                            ),
+                          title: Row(
+                            children: [
+                              Text(
+                                traveler.name,
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Color(0xFF00aa9b),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: 10.0),
+                              FutureBuilder<bool>(
+                                future: checkFavoriteStatus(traveler.userId),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    final isFavorite = snapshot.data ?? false;
+                                    return Icon(
+                                      Icons.favorite,
+                                      color: isFavorite ? Colors.red : Colors.grey,
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -137,4 +159,19 @@ class _AvailableTravelerScreenState extends State<AvailableTravelerScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+}
+Future<bool> checkFavoriteStatus(String userId) async {
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser != null) {
+    final currentUserId = currentUser.uid;
+    final favoritesCollection = FirebaseFirestore.instance.collection('favorites');
+
+    final querySnapshot = await favoritesCollection
+        .where('userId', isEqualTo: currentUserId)
+        .where('favoriteUserId', isEqualTo: userId)
+        .get();
+
+    return querySnapshot.docs.isNotEmpty;
+  }
+  return false;
 }

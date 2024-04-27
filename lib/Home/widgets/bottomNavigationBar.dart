@@ -39,8 +39,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
           label: 'Bookings',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
+          icon: Icon(Icons.favorite),
+          label: 'Favories',
         ),
       ],
     );

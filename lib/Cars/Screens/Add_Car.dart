@@ -45,13 +45,18 @@ class _AddCarScreenState extends State<AddCarScreen> {
         photoUrl = await _uploadImage(File(_carImage!.path));
       }
 
-      // Add car data to Firestore
-      await FirebaseFirestore.instance.collection('cars').add({
+      // Add car data to Firestore and get document reference
+      DocumentReference ref = await FirebaseFirestore.instance.collection('cars').add({
         'carType': _carType,
         'serialNumber': _serialNumber,
         'numberOfSeats': _numberOfSeats,
         'photoUrl': photoUrl,
         'userID': userID, // Include the user ID of the creator
+      });
+
+      // Update the document with the carId using the document reference ID
+      await ref.update({
+        'carID': ref.id,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -67,6 +72,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
       );
     }
   }
+
 
 
   Future<String> _uploadImage(File imageFile) async {
