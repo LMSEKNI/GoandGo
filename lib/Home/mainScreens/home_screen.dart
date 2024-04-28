@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
               AvailableTravelerScreen()
             else
               AvailableCarsScreen(),
-            Placeholder(), // Placeholder for the second screen
+            Placeholder(),
             ChatScreen(),
             BookedCarsScreen(),
             FavoritesScreen_main(),

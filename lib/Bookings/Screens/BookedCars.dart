@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../Menu/Widgets/MenuButtonWidget.dart';
+import 'Booking_manager.dart';
 
 class BookedCarsScreen extends StatelessWidget {
   @override
@@ -95,6 +96,21 @@ class BookedCarsScreen extends StatelessWidget {
                               ),
                               title: Text(userData['userName']),
                               subtitle: Text(userData['userEmail']),
+
+                              onTap: () {
+                                // Within your ListView.builder or wherever you're setting up the onTap
+                                final bookingData = documents[index];
+                                final bookingID = bookingData.id; // Getting the document ID correctly
+                                final Map<String, dynamic> data = bookingData.data() as Map<String, dynamic>; // This is your existing data map
+
+                                // Navigate to BookingManager interface with user and booking details
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BookingManagerScreen(bookingID:bookingID, userId: userId)
+                                  ),
+                                );
+                              },
                             );
                           },
                         )).toList(),
