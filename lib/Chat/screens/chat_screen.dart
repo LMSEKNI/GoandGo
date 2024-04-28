@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../Menu/Widgets/MenuButtonWidget.dart';
 import '../core/storage.dart';
-import 'ChatRoomScreen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -97,17 +97,21 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
 
+  void _navigateToConversation(UserData user) async {
+    final url = Uri.parse('https://teams.microsoft.com');
 
-  void _navigateToConversation(UserData user) {
-    final currentUserID = FirebaseAuth.instance.currentUser!.uid;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChatRoomScreen(
-          userId1: currentUserID,
-          userId2: user.userId,
-        ),
-      ),
-    );
+    final Uri fallbackUrl = Uri.parse('https://teams.microsoft.com');
+
+    bool launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+    if (!launched) {
+      // If the specific page can't be opened, try the homepage or show an error
+      launched = await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+      if (!launched) {
+        // Handle the failure here
+        print('Could not launch Microsoft Teams.');
+      }
+    }
   }
+
+
 }
