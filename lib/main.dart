@@ -33,11 +33,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MySplashScreen(),
-      routes: {
-        '/home': (context) => HomeScreen(),
-        '/chat': (context) => ChatScreen(),
-        '/profile': (context) => ProfileScreen(),
-      },
     );
   }
 }

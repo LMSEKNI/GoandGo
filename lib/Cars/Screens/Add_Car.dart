@@ -35,7 +35,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
       // Get the current user's ID from Firebase Authentication
       String? userID = FirebaseAuth.instance.currentUser?.uid;
       if (userID == null) {
-        // Handle the case when user is not logged in
+        // Handle the case when the user is not logged in
         return;
       }
 
@@ -45,18 +45,30 @@ class _AddCarScreenState extends State<AddCarScreen> {
         photoUrl = await _uploadImage(File(_carImage!.path));
       }
 
-      // Add car data to Firestore
-      await FirebaseFirestore.instance.collection('cars').add({
-        'carType': _carType,
-        'serialNumber': _serialNumber,
-        'numberOfSeats': _numberOfSeats,
-        'photoUrl': photoUrl,
-        'userID': userID, // Include the user ID of the creator
+      // Start a Firestore transaction
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        // Add car data to Firestore and get document reference
+        DocumentReference ref = await FirebaseFirestore.instance.collection('cars').add({
+          'carType': _carType,
+          'serialNumber': _serialNumber,
+          'numberOfSeats': _numberOfSeats,
+          'photoUrl': photoUrl,
+          'userID': userID, // Include the user ID of the creator
+        });
+        await ref.update({
+          'carID': ref.id,
+        });
+
+        // Update the user's status to 'driver'
+        DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userID);
+        transaction.update(userRef, {
+          'status': 'driver',
+        });
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Car added successfully!'),
+          content: Text('Car added successfully, status updated to driver!'),
         ),
       );
 
@@ -82,6 +94,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Car'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),

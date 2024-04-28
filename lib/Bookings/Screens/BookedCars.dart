@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../Menu/Widgets/MenuButtonWidget.dart';
+
 class BookedCarsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUserID = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Bookings"),
+        centerTitle: true,
+        backgroundColor: Color(0xFF00aa9b),
+      ),
+      drawer: const MenuDrawer(),
       body: Container(
         color: Color(0xFF232d4b), // Change body color
         child: StreamBuilder<QuerySnapshot>(
@@ -35,58 +43,61 @@ class BookedCarsScreen extends StatelessWidget {
             return ListView.builder(
               itemCount: documents.length,
               itemBuilder: (context, index) {
-                final bookingData = documents[index].data() as Map<
-                    String,
-                    dynamic>;
-                final carID = bookingData['carID'];
+                final bookingData = documents[index].data() as Map<String, dynamic>;
                 return FutureBuilder<DocumentSnapshot>(
-                  future: FirebaseFirestore.instance.collection('cars').doc(
-                      carID).get(),
+                  future: FirebaseFirestore.instance.collection('cars').doc(bookingData['carID']).get(),
                   builder: (context, carSnapshot) {
-                    if (carSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return SizedBox(); // Placeholder while loading car details
+                    if (carSnapshot.connectionState == ConnectionState.waiting) {
+                      return Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: CircularProgressIndicator(),
+                      );
                     }
-                    if (carSnapshot.hasError || !carSnapshot.hasData) {
-                      return SizedBox(); // Placeholder if car details not found
+                    if (carSnapshot.hasError) {
+                      return ListTile(
+                        title: Text("Error loading car data"),
+                      );
                     }
-                    final carData = carSnapshot.data!.data() as Map<
-                        String,
-                        dynamic>;
-                    return Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white, // Change box color
-                          borderRadius: BorderRadius.circular(10.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          leading: Image.network(
-                            carData['photoUrl'],
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                          ),
-                          title: Text(carData['carType']),
-                          subtitle: Text(
-                              'Serial Number: ${carData['serialNumber']}'),
-                          trailing: IconButton(
-                            icon: Icon(Icons.cancel),
-                            onPressed: () {
-                              _cancelBooking(
-                                  context, documents[index].id, carID,
-                                  carData['numberOfSeats']);
-                            },
-                          ),
-                        ),
+                    if (!carSnapshot.hasData || carSnapshot.data!.data() == null) {
+                      return ListTile(
+                        title: Text("No data found for car"),
+                      );
+                    }
+                    Map<String, dynamic> carData = carSnapshot.data!.data() as Map<String, dynamic>;
+                    List<String> userIds = List.from(bookingData['userIDs']);
+                    return Card(
+                      margin: EdgeInsets.all(8.0),
+                      child: ExpansionTile(
+                        title: Text("${carData['carType']} Booking Details"),
+                        children: userIds.map((userId) => FutureBuilder<DocumentSnapshot>(
+                          future: FirebaseFirestore.instance.collection('users').doc(userId).get(),
+                          builder: (context, userSnapshot) {
+                            if (userSnapshot.connectionState == ConnectionState.waiting) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            if (userSnapshot.hasError) {
+                              return ListTile(
+                                title: Text("Error loading user data"),
+                              );
+                            }
+                            if (!userSnapshot.hasData || userSnapshot.data!.data() == null) {
+                              return ListTile(
+                                title: Text("No data found for user"),
+                              );
+                            }
+                            Map<String, dynamic> userData = userSnapshot.data!.data() as Map<String, dynamic>;
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(userData['userAvatarUrl']),
+                              ),
+                              title: Text(userData['userName']),
+                              subtitle: Text(userData['userEmail']),
+                            );
+                          },
+                        )).toList(),
                       ),
                     );
                   },
@@ -151,3 +162,4 @@ class BookedCarsScreen extends StatelessWidget {
     });
   }
 }
+
