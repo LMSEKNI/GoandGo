@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 
 import '../Chat/core/storage.dart';
+import '../Menu/Widgets/MenuButtonWidget.dart';
 import 'TravalerDetails.dart'; // Import UserDetailsScreen
 
 class AvailableTravelerScreen extends StatefulWidget {
@@ -50,6 +51,7 @@ class _AvailableTravelerScreenState extends State<AvailableTravelerScreen> {
         title: const Text("Available Travelers"),
         centerTitle: true,
       ),
+      drawer: const MenuDrawer(),
       body: SafeArea(
         child: Column(
           children: [

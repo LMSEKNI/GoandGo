@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import '../../Bookings/Services/BookingService.dart';
 import '../../Travelers/favorites_service.dart';
-import '../Services/BookingService.dart';
+
 
 class CarDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> carData;
@@ -142,60 +142,59 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
 }
 
 
-  Widget _buildInfoBox(String title, dynamic value) {
-    final valueString = value.toString(); // Convert value to string
+Widget _buildInfoBox(String title, dynamic value) {
+  final valueString = value.toString(); // Convert value to string
 
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 5.0,
-            offset: Offset(0, 2),
+  return Container(
+    width: double.infinity,
+    padding: EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 5.0,
+          offset: Offset(0, 2),
+        ),
+      ],
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 8.0),
+        Text(valueString),
+      ],
+    ),
+  );
+}
+void _showBookingDialog(BuildContext context, String carID, Map<String, dynamic> carData) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Confirm Booking'),
+        content: Text('Do you want to book this car?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              BookingService.bookCar(context, carID, carData);
+            },
+            child: Text('Confirm'),
           ),
         ],
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8.0),
-          Text(valueString),
-        ],
-      ),
-    );
-  }
-  void _showBookingDialog(BuildContext context, String carID, Map<String, dynamic> carData) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Confirm Booking'),
-          content: Text('Do you want to book this car?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                BookingService.bookCar(context, carID, carData);
-              },
-              child: Text('Confirm'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+      );
+    },
+  );
+}

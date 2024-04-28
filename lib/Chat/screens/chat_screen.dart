@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../Menu/Widgets/MenuButtonWidget.dart';
 import '../core/storage.dart';
 import 'ChatRoomScreen.dart';
 
@@ -45,6 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
         title: const Text("Chats"),
         centerTitle: true,
       ),
+      drawer: const MenuDrawer(),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(16.0),

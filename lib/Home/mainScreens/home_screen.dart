@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goandgoapp/Profile/profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../Bookings/Screens/BookedCars.dart';
 import '../../Cars/Screens/AvailableCarsScreen.dart';
 import '../../Chat/screens/chat_screen.dart';
@@ -33,21 +34,48 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildScreen() {
-    switch (_currentIndex) {
-      case 0://Cars
-        return AvailableCarsScreen();
-      case 1: //traveler
-        return AvailableTravelerScreen();
-      case 2://Home
-        return Placeholder();
-      case 3://chat
-        return ChatScreen();
-      case 4://bookings
-        return BookedCarsScreen();
-      case 5://favorites
-        return FavoritesScreen_main();
-      default:
-        return Placeholder();
+    return FutureBuilder<String>(
+      future: fetchUserStatus(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show a loading indicator while fetching user status
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final userStatus = snapshot.data;
+
+        return IndexedStack(
+          index: _currentIndex,
+          children: [
+            if (userStatus == 'driver')
+              AvailableTravelerScreen()
+            else
+              AvailableCarsScreen(),
+            Placeholder(), // Placeholder for the second screen
+            ChatScreen(),
+            BookedCarsScreen(),
+            FavoritesScreen_main(),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String> fetchUserStatus() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final userDataSnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(currentUser.uid)
+          .get();
+
+      if (userDataSnapshot.exists) {
+        final userData = userDataSnapshot.data() as Map<String, dynamic>;
+        final userStatus = userData['status'] as String;
+        return userStatus;
+      }
     }
+
+    return '';
   }
 }

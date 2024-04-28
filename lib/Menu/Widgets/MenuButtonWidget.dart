@@ -62,35 +62,35 @@ class _MenuDrawerState extends State<MenuDrawer> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.directions_car),
+            leading: Icon(Icons.directions_car_outlined),
             title: Text('My rides'),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => BookedCarsScreen()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.favorite),
+            leading: Icon(Icons.favorite_border_outlined),
             title: Text('favorites'),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => FavoritesScreen_main()));
             },
           ),
           ListTile(
-            leading: Icon(Icons.question_mark),
+            leading: Icon(Icons.help_outline),
             title: Text('support'),
             onTap: () {
               //
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings),
+            leading: Icon(Icons.settings_outlined),
             title: Text('settings'),
             onTap: () {
               //
             },
           ),
           ListTile(
-            leading: Icon(Icons.info_rounded),
+            leading: Icon(Icons.info_outline),
             title: Text('about'),
             onTap: () {
               //
