@@ -5,6 +5,7 @@ import '../../Bookings/Screens/BookedCars.dart';
 import '../../Cars/Screens/AvailableCarsScreen.dart';
 import '../../Chat/screens/chat_screen.dart';
 import '../../Favorites/mainPage.dart';
+import '../../Map/googleMap.dart';
 import '../../Travelers/AvailableTravalersScreen.dart';
 import '../widgets/bottomNavigationBar.dart';
 
@@ -51,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
               AvailableTravelerScreen()
             else
               AvailableCarsScreen(),
-            Placeholder(),
+            MapWidget(),
             ChatScreen(),
             BookedCarsScreen(),
             FavoritesScreen_main(),
