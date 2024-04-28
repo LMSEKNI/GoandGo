@@ -47,7 +47,13 @@ dependencies:
   url_launcher: ^6.1.5
   flutter_rating_bar: ^4.0.0
   firebase_messaging: ^14.9.1
-
+  google_maps_flutter: ^2.5.0
+  location: # temporary fix for android compile error
+    git:
+      url: https://github.com/781flyingdutchman/flutterlocation.git
+      ref: V4
+      path: packages/location
+  flutter_polyline_points: ^2.0.0
 
 dev_dependencies:
   flutter_test:
