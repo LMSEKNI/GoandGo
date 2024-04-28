@@ -1,4 +1,4 @@
-# go&g oapp
+# GO&GO app
 Inetum Carpooling App: GO&GO
 Overview:
 
